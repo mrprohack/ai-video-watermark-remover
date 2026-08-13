@@ -8,18 +8,18 @@ import {
   useRef,
   useState,
 } from "react";
-import { validateVideoFileMeta } from "@/lib/file-validation";
+import { ALLOWED_VIDEO_TYPES, validateVideoFileMeta } from "@/lib/file-validation";
 import {
   estimateCredits,
   formatDuration,
   MAX_MVP_DURATION_SECONDS,
-  ProcessingQuality,
+  type ProcessingQuality,
 } from "@/lib/pricing";
 import type { JobState } from "@/lib/job-state";
 
 type StudioState = "idle" | JobState;
 
-const ACCEPTED_TYPES = "video/mp4,video/quicktime,video/webm";
+const ACCEPTED_TYPES = ALLOWED_VIDEO_TYPES.join(",");
 
 function UploadIcon() {
   return (
@@ -164,6 +164,7 @@ export function VideoCleanupStudio() {
             accept={ACCEPTED_TYPES}
             onChange={onInputChange}
             aria-label="Choose a video"
+            tabIndex={-1}
           />
           <button type="button" onClick={() => inputRef.current?.click()}>
             <span className="upload-icon"><UploadIcon /></span>
@@ -185,7 +186,7 @@ export function VideoCleanupStudio() {
   }
 
   return (
-    <div className="studio-card studio-active">
+    <div className="studio-card studio-active" aria-busy={isBusy}>
       <div className="studio-toolbar">
         <div className="file-identity">
           <span className="status-dot" />
@@ -209,6 +210,7 @@ export function VideoCleanupStudio() {
             src={previewUrl}
             controls
             playsInline
+            aria-label="Selected video preview"
             onLoadedMetadata={onVideoMetadata}
           />
           {state === "processing" && (
@@ -227,7 +229,7 @@ export function VideoCleanupStudio() {
         <aside className="studio-controls">
           <div className="control-section">
             <span className="control-label">Removal mode</span>
-            <button className="mode-option selected" type="button">
+            <button className="mode-option selected" type="button" aria-pressed="true">
               <span className="radio-indicator" />
               <span>
                 <strong>Auto clean</strong>
@@ -245,10 +247,11 @@ export function VideoCleanupStudio() {
 
           <div className="control-section">
             <span className="control-label">Quality</span>
-            <div className="segmented-control" aria-label="Processing quality">
+            <div className="segmented-control" role="group" aria-label="Processing quality">
               <button
                 className={quality === "standard" ? "selected" : ""}
                 type="button"
+                aria-pressed={quality === "standard"}
                 onClick={() => setQuality("standard")}
                 disabled={isBusy}
               >
@@ -257,6 +260,7 @@ export function VideoCleanupStudio() {
               <button
                 className={quality === "high" ? "selected" : ""}
                 type="button"
+                aria-pressed={quality === "high"}
                 onClick={() => setQuality("high")}
                 disabled={isBusy}
               >
@@ -294,7 +298,16 @@ export function VideoCleanupStudio() {
                 <strong>{state === "queued" ? "Preparing job" : "Cleaning video"}</strong>
                 <span>{progress}%</span>
               </div>
-              <div className="progress-track"><span style={{ width: `${progress}%` }} /></div>
+              <div
+                className="progress-track"
+                role="progressbar"
+                aria-label="Cleanup progress"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={progress}
+              >
+                <span style={{ width: `${progress}%` }} />
+              </div>
               <small>This is a deterministic demo state; no paid API is called.</small>
             </div>
           ) : state === "completed" ? (
