@@ -39,10 +39,9 @@ for (const definition of pages) {
       "href",
       `http://localhost:3000${definition.path}`,
     );
-    await expect(page.getByRole("link", { name: /open the cleanup studio/i })).toHaveAttribute(
-      "href",
-      "/#product",
-    );
+    await expect(
+      page.getByRole("link", { name: /open the cleanup studio/i }).first(),
+    ).toHaveAttribute("href", "/#product");
     await expect(page.getByText(/production AI rendering provider/i).first()).toBeVisible();
 
     const jsonLd = page.locator('script[type="application/ld+json"]');
@@ -68,7 +67,9 @@ test("SEO tool page remains usable on a narrow mobile viewport", async ({ page }
       name: "AI video watermark remover for clean, authorized edits.",
     }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: /open the cleanup studio/i })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /open the cleanup studio/i }).first(),
+  ).toBeVisible();
 
   const bodyWidth = await page.locator("body").evaluate((body) => body.scrollWidth);
   expect(bodyWidth).toBeLessThanOrEqual(390);
