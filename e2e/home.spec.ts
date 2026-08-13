@@ -23,7 +23,7 @@ test("desktop landing page exposes the core cleanup workflow", async ({ page }) 
   ).toBeVisible();
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    "http://localhost:3000/",
+    "http://localhost:3000",
   );
   await expect(page.getByRole("link", { name: /clean a video/i })).toBeVisible();
 
