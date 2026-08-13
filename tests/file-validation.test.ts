@@ -25,6 +25,19 @@ describe("validateVideoFileMeta", () => {
     ).toEqual({ ok: false, message: "Use an MP4, MOV, or WebM video." });
   });
 
+  it("rejects mismatched MIME types and file extensions", () => {
+    expect(
+      validateVideoFileMeta({
+        name: "not-really-a-video.pdf",
+        type: "video/mp4",
+        size: 2_000_000,
+      }),
+    ).toEqual({
+      ok: false,
+      message: "The file extension does not match its reported video format.",
+    });
+  });
+
   it("rejects videos over the MVP file-size limit", () => {
     expect(
       validateVideoFileMeta({
