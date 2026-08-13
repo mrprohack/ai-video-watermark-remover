@@ -37,6 +37,20 @@ test("desktop landing page exposes the core cleanup workflow", async ({ page }) 
   });
 });
 
+test("SEO discovery endpoints use the same canonical site origin", async ({ request }) => {
+  const robotsResponse = await request.get("/robots.txt");
+  expect(robotsResponse.status()).toBe(200);
+  const robots = await robotsResponse.text();
+  expect(robots).toContain("User-Agent: *");
+  expect(robots).toContain("Allow: /");
+  expect(robots).toContain("Sitemap: http://localhost:3000/sitemap.xml");
+
+  const sitemapResponse = await request.get("/sitemap.xml");
+  expect(sitemapResponse.status()).toBe(200);
+  const sitemap = await sitemapResponse.text();
+  expect(sitemap).toContain("<loc>http://localhost:3000</loc>");
+});
+
 test("studio quality controls expose their selected state", async ({ page }) => {
   await page.goto("/");
   await page.locator('input[type="file"]').setInputFiles({
