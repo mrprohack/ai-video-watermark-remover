@@ -1,11 +1,18 @@
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 
+const SEO_PATHS = [
+  "/video-watermark-remover",
+  "/remove-logo-from-video",
+  "/remove-text-from-video",
+  "/remove-date-stamp-from-video",
+];
+
 test.beforeAll(() => {
   mkdirSync("artifacts", { recursive: true });
 });
 
-test("desktop landing page exposes the core cleanup workflow", async ({ page }) => {
+test("desktop landing page exposes the core cleanup workflow and SEO hub", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   const response = await page.goto("/");
 
@@ -18,16 +25,33 @@ test("desktop landing page exposes the core cleanup workflow", async ({ page }) 
   expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
   expect(headers["content-security-policy"]).toContain("media-src 'self' blob:");
 
+  await expect(page).toHaveTitle(
+    "AI Video Watermark Remover & Video Cleanup | ClearFrame",
+  );
   await expect(
-    page.getByRole("heading", { name: "Clean unwanted overlays from video." }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "AI video watermark remover with a preview-first workflow.",
+    }),
   ).toBeVisible();
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
     "http://localhost:3000",
   );
-  await expect(page.getByRole("link", { name: /clean a video/i })).toBeVisible();
+  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+  const jsonLd = JSON.parse(
+    (await page.locator('script[type="application/ld+json"]').textContent()) ?? "{}",
+  );
+  expect(jsonLd["@type"]).toBe("WebApplication");
+  expect(jsonLd.url).toBe("http://localhost:3000");
 
-  await page.getByRole("link", { name: /clean a video/i }).click();
+  for (const path of SEO_PATHS) {
+    await expect(page.locator(`a[href="${path}"]`).first()).toBeVisible();
+  }
+
+  const studioLink = page.getByRole("link", { name: /open the cleanup studio/i }).first();
+  await expect(studioLink).toBeVisible();
+  await studioLink.click();
   await expect(page.getByText("Drop your video here")).toBeVisible();
   await expect(page.getByText(/Up to 100 MB/)).toBeVisible();
 
@@ -37,7 +61,7 @@ test("desktop landing page exposes the core cleanup workflow", async ({ page }) 
   });
 });
 
-test("SEO discovery endpoints use the same canonical site origin", async ({ request }) => {
+test("SEO discovery endpoints expose every indexable route", async ({ request }) => {
   const robotsResponse = await request.get("/robots.txt");
   expect(robotsResponse.status()).toBe(200);
   const robots = await robotsResponse.text();
@@ -49,6 +73,9 @@ test("SEO discovery endpoints use the same canonical site origin", async ({ requ
   expect(sitemapResponse.status()).toBe(200);
   const sitemap = await sitemapResponse.text();
   expect(sitemap).toContain("<loc>http://localhost:3000</loc>");
+  for (const path of SEO_PATHS) {
+    expect(sitemap).toContain(`<loc>http://localhost:3000${path}</loc>`);
+  }
 });
 
 test("studio quality controls expose their selected state", async ({ page }) => {
@@ -70,15 +97,21 @@ test("studio quality controls expose their selected state", async ({ page }) => 
   await expect(high).toHaveAttribute("aria-pressed", "true");
 });
 
-test("mobile layout keeps the uploader and primary action usable", async ({ page }) => {
+test("mobile homepage keeps the uploader and primary action usable", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "Clean unwanted overlays from video." }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "AI video watermark remover with a preview-first workflow.",
+    }),
   ).toBeVisible();
-  await page.getByRole("link", { name: /clean a video/i }).click();
+  await page.getByRole("link", { name: /open the cleanup studio/i }).first().click();
   await expect(page.getByText("Drop your video here")).toBeVisible();
+
+  const bodyWidth = await page.locator("body").evaluate((body) => body.scrollWidth);
+  expect(bodyWidth).toBeLessThanOrEqual(390);
 
   await page.screenshot({
     path: "artifacts/home-mobile.png",
