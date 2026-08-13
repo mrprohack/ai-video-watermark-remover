@@ -1,4 +1,7 @@
+import Link from "next/link";
 import { VideoCleanupStudio } from "@/components/video-cleanup-studio";
+import { SEO_PAGES } from "@/lib/seo-pages";
+import { webApplicationJsonLd } from "@/lib/structured-data";
 
 function ArrowIcon() {
   return (
@@ -16,9 +19,18 @@ function CheckIcon() {
   );
 }
 
+function jsonLd(value: unknown) {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
 export default function HomePage() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(webApplicationJsonLd()) }}
+      />
+
       <header className="site-header shell">
         <a className="brand" href="#top" aria-label="ClearFrame home">
           <span className="brand-mark" aria-hidden="true">
@@ -27,9 +39,9 @@ export default function HomePage() {
           <span>ClearFrame</span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="#product">Product</a>
+          <a href="#product">Studio</a>
           <a href="#how">How it works</a>
-          <a href="#pricing">Pricing</a>
+          <a href="#use-cases">Tools</a>
           <a href="#faq">FAQ</a>
         </nav>
         <a className="header-cta" href="#product">
@@ -39,28 +51,29 @@ export default function HomePage() {
 
       <section className="hero shell" id="top">
         <div className="hero-copy">
-          <h1>Clean unwanted overlays from video.</h1>
+          <h1>AI video watermark remover with a preview-first workflow.</h1>
           <p className="hero-lede">
-            Remove logos, text, timestamps, and watermarks from videos you own
-            or have permission to edit — without cropping or frame-by-frame work.
+            Prepare logo, text, timestamp, and watermark cleanup for videos you own
+            or have permission to edit — with file checks and transparent usage
+            estimates before a production AI render.
           </p>
           <div className="hero-actions">
             <a className="primary-button" href="#product">
-              Clean a video <ArrowIcon />
+              Open the cleanup studio <ArrowIcon />
             </a>
-            <a className="text-link" href="#how">
-              See how it works
-            </a>
+            <Link className="text-link" href="/video-watermark-remover">
+              Explore watermark removal
+            </Link>
           </div>
           <ul className="trust-list" aria-label="Product benefits">
             <li>
               <CheckIcon /> Preview-first workflow
             </li>
             <li>
-              <CheckIcon /> Transparent credit estimate
+              <CheckIcon /> Transparent usage estimate
             </li>
             <li>
-              <CheckIcon /> Private-by-design roadmap
+              <CheckIcon /> Authorized-content focus
             </li>
           </ul>
         </div>
@@ -92,10 +105,11 @@ export default function HomePage() {
           <div className="section-heading studio-heading">
             <span className="section-index">01</span>
             <div>
-              <h2>Upload. Inspect. Clean.</h2>
+              <h2>Upload. Inspect. Prepare.</h2>
               <p>
-                The first product slice is live as an interactive workflow. AI
-                provider execution is intentionally isolated for the next phase.
+                The browser workflow validates the clip, exposes quality and usage
+                choices, and demonstrates explicit job states. Provider-backed AI
+                rendering remains a separate production milestone.
               </p>
             </div>
           </div>
@@ -107,10 +121,11 @@ export default function HomePage() {
         <div className="section-heading">
           <span className="section-index">02</span>
           <div>
-            <h2>Built around the decision that matters.</h2>
+            <h2>Know the workflow before you commit to a render.</h2>
             <p>
-              You should know what will happen, what it may cost, and whether a
-              clip is suitable before committing to a full render.
+              Video reconstruction has real compute cost and quality tradeoffs. The
+              product is designed to surface file suitability, expected usage, and
+              processing state instead of hiding them behind one button.
             </p>
           </div>
         </div>
@@ -123,15 +138,15 @@ export default function HomePage() {
           </article>
           <article>
             <span>2</span>
-            <h3>Review the estimate</h3>
-            <p>Duration and quality determine the displayed processing credits.</p>
+            <h3>Review quality and usage</h3>
+            <p>Duration and quality determine the displayed processing estimate.</p>
           </article>
           <article>
             <span>3</span>
-            <h3>Process with confidence</h3>
+            <h3>Prepare the cleanup job</h3>
             <p>
-              Explicit states make queueing, processing, failure, and completion
-              understandable rather than hiding everything behind a spinner.
+              Explicit ready, queued, processing, failed, and completed states make
+              the future provider integration understandable and testable.
             </p>
           </article>
         </div>
@@ -141,74 +156,98 @@ export default function HomePage() {
         <div className="shell capability-layout">
           <div className="capability-copy">
             <span className="section-index light-index">03</span>
-            <h2>One cleanup engine. Multiple creator jobs.</h2>
+            <h2>One cleanup product. Distinct video-editing jobs.</h2>
             <p>
-              The product architecture expands beyond watermark removal without
-              turning the homepage into a crowded editor.
+              ClearFrame separates high-intent use cases so each page can explain
+              the quality factors and workflow that matter for that specific edit.
             </p>
           </div>
           <div className="capability-list">
             <div>
               <span>01</span>
-              <strong>Static logo removal</strong>
-              <p>Corner marks, channel logos, and brand overlays.</p>
+              <strong>Static logo cleanup</strong>
+              <p>Old brand marks, channel logos, and owned overlays.</p>
             </div>
             <div>
               <span>02</span>
               <strong>Text & timestamp cleanup</strong>
-              <p>Dates, lower thirds, captions, and baked-in text.</p>
+              <p>Lower thirds, captions, dates, and baked-in text.</p>
             </div>
             <div>
               <span>03</span>
-              <strong>Moving-mask workflow</strong>
-              <p>Planned tracking mode for overlays that change position.</p>
+              <strong>Moving-overlay workflow</strong>
+              <p>A planned tracking mode for overlays that change position.</p>
             </div>
             <div>
               <span>04</span>
-              <strong>Batch & API</strong>
+              <strong>Batch & API roadmap</strong>
               <p>Reserved for validated agency and developer demand.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="pricing-section shell" id="pricing">
+      <section className="home-tools-section shell" id="use-cases">
         <div className="section-heading">
           <span className="section-index">04</span>
           <div>
-            <h2>Start with transparent usage.</h2>
+            <h2>Choose the cleanup job that matches your video.</h2>
             <p>
-              Validate demand with free preview behavior and simple usage pricing
-              before adding a wall of subscriptions.
+              These pages are intentionally different: each one explains a real
+              editing task rather than repeating the same page with swapped keywords.
+            </p>
+          </div>
+        </div>
+        <div className="home-tool-links">
+          {SEO_PAGES.map((page) => (
+            <Link key={page.path} href={page.path}>
+              <div>
+                <h3>{page.h1}</h3>
+                <p>{page.description}</p>
+              </div>
+              <ArrowIcon />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="pricing-section shell" id="pricing">
+        <div className="section-heading">
+          <span className="section-index">05</span>
+          <div>
+            <h2>Transparent usage before billing goes live.</h2>
+            <p>
+              The current MVP displays example credit estimates for validation. A
+              provider-backed checkout and final production price are not live yet.
             </p>
           </div>
         </div>
         <div className="pricing-grid">
           <article>
             <div>
-              <span className="plan-name">Free preview</span>
+              <span className="plan-name">Interactive MVP</span>
               <strong>$0</strong>
-              <p>Test the workflow and inspect a short preview before paying.</p>
+              <p>Use the browser workflow to validate files and inspect the product flow.</p>
             </div>
             <ul>
-              <li><CheckIcon /> One preview allowance</li>
-              <li><CheckIcon /> Standard processing</li>
-              <li><CheckIcon /> Clear usage estimate</li>
+              <li><CheckIcon /> File and duration checks</li>
+              <li><CheckIcon /> Quality selection</li>
+              <li><CheckIcon /> Visible usage estimate</li>
             </ul>
           </article>
           <article className="featured-plan">
             <div>
-              <span className="plan-name">Pay as you go</span>
-              <strong>$1.49<span>/min</span></strong>
-              <p>No forced subscription. Buy processing only when you need it.</p>
+              <span className="plan-name">Planned pay as you go</span>
+              <strong>$1.49<span>/min target</span></strong>
+              <p>A validation target, not an active checkout price. Final pricing follows provider integration.</p>
             </div>
             <ul>
-              <li><CheckIcon /> Full video processing</li>
-              <li><CheckIcon /> High-quality option</li>
-              <li><CheckIcon /> Job history roadmap</li>
+              <li><CheckIcon /> Planned full video processing</li>
+              <li><CheckIcon /> Planned high-quality option</li>
+              <li><CheckIcon /> No forced-subscription target</li>
             </ul>
             <a href="#product" className="plan-button">
-              Try the studio <ArrowIcon />
+              Try the current studio <ArrowIcon />
             </a>
           </article>
         </div>
@@ -216,33 +255,34 @@ export default function HomePage() {
 
       <section className="faq-section shell" id="faq">
         <div className="section-heading">
-          <span className="section-index">05</span>
+          <span className="section-index">06</span>
           <div>
             <h2>Questions before you upload.</h2>
           </div>
         </div>
         <div className="faq-list">
           <details>
-            <summary>Does this remove watermarks from any video?</summary>
+            <summary>Does ClearFrame remove watermarks from any video?</summary>
             <p>
-              The product is intended only for videos you own or are authorized to
-              modify. Results also depend on motion, occlusion, background detail,
-              and how much of the original scene is hidden.
+              ClearFrame is intended only for videos you own or are authorized to
+              modify. Reconstruction quality also depends on motion, occlusion,
+              background detail, and how much of the original scene is hidden.
             </p>
           </details>
           <details>
-            <summary>Is the AI processing connected in this repository yet?</summary>
+            <summary>Is the production AI processing connected yet?</summary>
             <p>
-              Not in this first slice. The interface, validation, pricing rules,
-              and job states are implemented first so the paid provider can be
-              integrated behind a tested boundary rather than embedded in the UI.
+              Not in this repository milestone. The interface, validation, usage
+              rules, authorization check, and job states are implemented first so a
+              paid provider can be integrated behind a tested backend boundary.
             </p>
           </details>
           <details>
-            <summary>Why show credits before processing?</summary>
+            <summary>Why show an estimate before processing?</summary>
             <p>
               Video inference has real per-second cost. A visible estimate makes
-              that cost understandable and prevents surprise billing.
+              expected usage understandable and reduces surprise billing when the
+              provider-backed product is introduced.
             </p>
           </details>
         </div>
@@ -255,9 +295,10 @@ export default function HomePage() {
             <span>ClearFrame</span>
           </a>
           <p>AI video cleanup for content you own or are authorized to edit.</p>
-          <a href="https://github.com/mrprohack/ai-video-watermark-remover">
-            GitHub
-          </a>
+          <div className="footer-links">
+            <Link href="/video-watermark-remover">Tools</Link>
+            <a href="https://github.com/mrprohack/ai-video-watermark-remover">GitHub</a>
+          </div>
         </div>
       </footer>
     </main>

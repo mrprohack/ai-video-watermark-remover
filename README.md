@@ -1,26 +1,40 @@
 # ClearFrame — AI Video Watermark Remover
 
-A production-oriented AI video cleanup SaaS for removing unwanted overlays from videos users own or are authorized to edit.
+A production-oriented AI video cleanup SaaS for preparing authorized watermark, logo, text, and timestamp cleanup workflows.
 
 ## Current milestone
 
-The `feat/mvp-video-cleanup` branch contains the hardened first product slice:
+The project now includes the hardened product MVP plus a focused SEO growth layer:
 
 - Next.js 16 App Router foundation
-- responsive SEO-first landing page
-- interactive upload and video-preview studio
+- responsive homepage with interactive upload and video-preview studio
 - MP4/MOV/WebM client validation with MIME/extension consistency checks
 - 100 MB / 60-second MVP limits
-- transparent credit estimation
-- explicit job-state workflow
+- transparent usage estimation and explicit job states
 - ownership/authorization confirmation
-- canonical metadata, `robots.txt`, and `sitemap.xml`
+- canonical metadata, `robots.txt`, and a route-driven `sitemap.xml`
+- `WebApplication` and breadcrumb structured data that matches visible page content
+- four distinct high-intent landing pages for watermark, logo, text, and date-stamp cleanup
+- crawlable internal links between the homepage and focused use-case pages
 - browser security headers and CSP
 - accessible selected/progress state semantics
 - deterministic npm lockfile and read-only, SHA-pinned GitHub Actions CI
 - unit tests and desktop/mobile Playwright coverage
 
-The processing UI currently uses a deterministic demo state and **does not call a paid AI provider yet**. Provider integration, private object storage, authentication, credit ledger, and Stripe billing are subsequent milestones.
+The processing UI currently uses a deterministic demo state and **does not call a paid AI provider yet**. Provider integration, private object storage, authentication, credit ledger, and Stripe billing remain separate milestones.
+
+## SEO architecture
+
+The first search cluster is intentionally small and utility-focused:
+
+- `/video-watermark-remover`
+- `/remove-logo-from-video`
+- `/remove-text-from-video`
+- `/remove-date-stamp-from-video`
+
+Each page has a different user job, title, description, H1, explanatory content, quality limitations, FAQ content, responsible-use language, and related internal links. The project deliberately avoids mass-producing keyword-swapped or city/platform variants that would add little value and risk becoming doorway or scaled-content pages.
+
+The route registry in `src/lib/seo-pages.ts` is the source of truth for these pages and sitemap entries. Tests enforce unique metadata and substantial page definitions before more routes are added.
 
 ## Local development
 
@@ -53,12 +67,13 @@ npm run build
 npm run e2e
 ```
 
-The GitHub Actions workflow runs the same gates with read-only repository permissions and immutable action SHAs.
+The browser suite verifies homepage and focused-page metadata, canonical URLs, structured data, sitemap discovery, internal links, security headers, core studio semantics, and mobile overflow.
 
 ## Project docs
 
 - `docs/superpowers/specs/2026-08-13-video-cleanup-mvp-design.md`
 - `docs/superpowers/plans/2026-08-13-video-cleanup-mvp.md`
+- `docs/superpowers/plans/2026-08-13-seo-growth-architecture.md`
 - `docs/security/threat-model.md`
 - `SECURITY.md`
 
