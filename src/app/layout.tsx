@@ -1,22 +1,36 @@
 import type { Metadata } from "next";
 import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
+import "./seo-pages.css";
+
+const title = "AI Video Watermark Remover & Video Cleanup | ClearFrame";
+const description =
+  "Explore ClearFrame, a preview-first AI video cleanup workflow for authorized watermark, logo, text, and timestamp removal with transparent usage estimates.";
 
 export const metadata: Metadata = {
   metadataBase: resolveSiteUrl(),
-  title: "ClearFrame — AI Video Watermark Remover",
-  description:
-    "Remove unwanted logos, text, timestamps, and overlays from videos you own or are authorized to edit.",
+  applicationName: "ClearFrame",
+  category: "video editing",
+  title,
+  description,
   alternates: {
     canonical: "/",
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "ClearFrame — AI Video Watermark Remover",
-    description:
-      "Clean unwanted overlays from your video without frame-by-frame editing.",
+    title,
+    description,
     type: "website",
     url: "/",
     siteName: "ClearFrame",
+  },
+  twitter: {
+    card: "summary",
+    title,
+    description,
   },
 };
 
