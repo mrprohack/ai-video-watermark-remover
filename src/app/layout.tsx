@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 import "./seo-pages.css";
+import "./home-seo.css";
 
 const title = "AI Video Watermark Remover & Video Cleanup | ClearFrame";
 const description =
