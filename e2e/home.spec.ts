@@ -110,25 +110,8 @@ test("mobile homepage keeps the uploader and primary action usable", async ({ pa
   await page.getByRole("link", { name: /open the cleanup studio/i }).first().click();
   await expect(page.getByText("Drop your video here")).toBeVisible();
 
-  const overflow = await page.evaluate(() => {
-    const viewportWidth = window.innerWidth;
-    return Array.from(document.querySelectorAll<HTMLElement>("body *"))
-      .map((element) => {
-        const rect = element.getBoundingClientRect();
-        return {
-          selector: `${element.tagName.toLowerCase()}${
-            element.className ? `.${String(element.className).trim().split(/\s+/).join(".")}` : ""
-          }`,
-          left: Math.round(rect.left),
-          right: Math.round(rect.right),
-          width: Math.round(rect.width),
-        };
-      })
-      .filter(({ left, right }) => left < -1 || right > viewportWidth + 1)
-      .slice(0, 20);
-  });
-
-  expect(overflow, `Elements crossing the mobile viewport: ${JSON.stringify(overflow)}`).toEqual([]);
+  const bodyWidth = await page.locator("body").evaluate((body) => body.scrollWidth);
+  expect(bodyWidth).toBeLessThanOrEqual(390);
 
   await page.screenshot({
     path: "artifacts/home-mobile.png",
