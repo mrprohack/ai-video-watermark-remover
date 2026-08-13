@@ -1,3 +1,8 @@
+.hero-copy,
+.hero-visual {
+  min-width: 0;
+}
+
 .home-tools-section {
   padding-block: 112px;
 }
