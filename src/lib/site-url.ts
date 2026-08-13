@@ -1,4 +1,5 @@
 type SiteEnvironment = {
+  [key: string]: string | undefined;
   NEXT_PUBLIC_SITE_URL?: string;
   VERCEL_PROJECT_PRODUCTION_URL?: string;
 };
